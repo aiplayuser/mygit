@@ -1,0 +1,29 @@
+
+- label: "init\nindex-tts"
+  popup: "start"
+  command: |-
+    if not exist index-tts (git clone https://github.com/index-tts/index-tts.git)
+    cd index-tts
+    echo. & git lfs install & git lfs pull 
+    echo. & uv venv --allow-existing & uv sync --extra webui
+    echo. & .venv\Scripts\hf download IndexTeam/IndexTTS-2 --local-dir=checkpoints
+    echo. & uv run tools/gpu_check.py 
+
+- label: "start\nindex-tts"
+  popup: ""
+  command: |-
+    echo. & echo ---启动大概一分钟左右，完成后刷新网页即可
+    cd index-tts & start http://127.0.0.1:7860 & uv run webui.py
+
+- label: "init\nComfyUI"
+  popup: ""
+  command: |-
+    set comfyuiurl=https://github.com/comfyanonymous/ComfyUI/releases/latest/download/ComfyUI_windows_portable_nvidia.7z
+    if not exist .comfyui.7z curl -#fkL %comfyuiurl% -o .comfyui.7z    
+    .7z\7z x .comfyui.7z -aos -bsp1
+
+- label: "start\nComfyUI"
+  popup: ""
+  command: |-
+    echo. & echo ---启动大概一分钟左右
+    cd ComfyUI_windows_portable & run_nvidia_gpu_fast_fp16_accumulation.bat
